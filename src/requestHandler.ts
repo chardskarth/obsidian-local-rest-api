@@ -341,7 +341,9 @@ export default class RequestHandler {
 
   async vaultGet(req: express.Request, res: express.Response): Promise<void> {
     const path = decodeURIComponent(
-      req.path.slice(req.path.indexOf("/", 1) + 1)
+      decodeURIComponent(
+        req.path.slice(req.path.indexOf("/", 1) + 1)
+      )
     );
 
     return this._vaultGet(path, req, res);
