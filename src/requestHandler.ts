@@ -40,6 +40,8 @@ import {
   SearchContext,
   SearchJsonResponseItem,
   SearchResponseItem,
+  ResolvePayloadRequest,
+  ResolveResponse
 } from "./types";
 import {
   findHeadingBoundary,
@@ -262,10 +264,10 @@ export default class RequestHandler {
       certificateInfo:
         this.requestIsAuthenticated(req) && certificate
           ? {
-              validityDays: getCertificateValidityDays(certificate),
-              regenerateRecommended:
-                !getCertificateIsUptoStandards(certificate),
-            }
+            validityDays: getCertificateValidityDays(certificate),
+            regenerateRecommended:
+              !getCertificateIsUptoStandards(certificate),
+          }
           : undefined,
       apiExtensions: this.requestIsAuthenticated(req)
         ? this.apiExtensions.map(({ manifest }) => manifest)
@@ -818,6 +820,19 @@ export default class RequestHandler {
     return this.redirectToVaultPath(file, req, res, this._vaultGet.bind(this));
   }
 
+  async resolveFileLocation(
+    req: express.Request,
+    res: express.Response
+  ) {
+    const {from, to}: ResolvePayloadRequest = req.body;
+
+    const resolvedPath = this.app.metadataCache.getFirstLinkpathDest(to, from);
+    res.send(resolvedPath.path);
+
+    return;
+  }
+
+
   async periodicPut(
     req: express.Request,
     res: express.Response
@@ -1192,7 +1207,7 @@ export default class RequestHandler {
   setupRouter() {
     this.api.use((req, res, next) => {
       const originalSend = res.send;
-      res.send = function (body, ...args) {
+      res.send = function(body, ...args) {
         console.log(`[REST API] ${req.method} ${req.url} => ${res.statusCode}`);
 
         return originalSend.apply(res, [body, ...args]);
@@ -1249,6 +1264,10 @@ export default class RequestHandler {
       .patch(this.vaultPatch.bind(this))
       .post(this.vaultPost.bind(this))
       .delete(this.vaultDelete.bind(this));
+
+    this.api
+      .route("/resolve")
+      .post(this.resolveFileLocation.bind(this))
 
     this.api
       .route("/periodic/:period/")

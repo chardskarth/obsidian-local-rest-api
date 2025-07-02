@@ -110,9 +110,14 @@ export class CachedMetadata {
 
 export class MetadataCache {
   _getFileCache = new CachedMetadata();
+  _resolvedLinkPath = new TFile()
 
   getFileCache(file: TFile): CachedMetadata {
     return this._getFileCache;
+  }
+
+  getFirstLinkpathDest(linkpath: string, sourcePath: string): TFile {
+    return this._resolvedLinkPath;
   }
 }
 

@@ -802,4 +802,17 @@ describe("requestHandler", () => {
         .expect(401);
     });
   });
+
+  describe("resolvePost", () => {
+    test("returns 200", async () => {
+      await request(server)
+        .post(`/resolve`)
+        .set("Authorization", `Bearer ${API_KEY}`)
+        .set("Content-Type", "application/json")
+         .send({ from: 'fileFrom.md', to: 'relativeFile.md' })
+        //.send("asdf")
+        .expect(200);
+    })
+
+  });
 });

@@ -150,3 +150,12 @@ export interface FileMetadataObject {
   path: string;
   content: string;
 }
+
+export interface ResolvePayloadRequest {
+  from: string,
+  to: string
+}
+
+export interface ResolveResponse {
+  resolvedLocation: string
+}
