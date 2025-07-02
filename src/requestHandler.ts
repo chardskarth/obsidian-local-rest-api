@@ -824,7 +824,15 @@ export default class RequestHandler {
     req: express.Request,
     res: express.Response
   ) {
-    const {from, to}: ResolvePayloadRequest = req.body;
+    const { from, to }: ResolvePayloadRequest = req.body ?? { from: "", to: "" };
+
+    if(!from || !to) {
+      res
+        .set('text/html')
+        .status(400)
+        .send("Incorrect payload, expecting from and to json body");
+      return;
+    }
 
     const resolvedPath = this.app.metadataCache.getFirstLinkpathDest(to, from);
     res.send(resolvedPath.path);

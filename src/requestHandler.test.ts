@@ -804,15 +804,24 @@ describe("requestHandler", () => {
   });
 
   describe("resolvePost", () => {
+
     test("returns 200", async () => {
       await request(server)
         .post(`/resolve`)
         .set("Authorization", `Bearer ${API_KEY}`)
         .set("Content-Type", "application/json")
-         .send({ from: 'fileFrom.md', to: 'relativeFile.md' })
-        //.send("asdf")
+        .send({ from: 'fileFrom.md', to: 'relativeFile.md' })
         .expect(200);
-    })
+    });
+
+    test.only("returns 400 on no payload", async () => {
+      const response = await request(server)
+        .post(`/resolve`)
+        .set("Authorization", `Bearer ${API_KEY}`)
+        .expect(400);
+        expect((response.error as any)?.text).toEqual("Incorrect payload, expecting from and to json body")
+        
+    });
 
   });
 });
