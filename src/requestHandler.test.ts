@@ -814,13 +814,22 @@ describe("requestHandler", () => {
         .expect(200);
     });
 
-    test.only("returns 400 on no payload", async () => {
+    test("returns 400 on no payload", async () => {
       const response = await request(server)
         .post(`/resolve`)
         .set("Authorization", `Bearer ${API_KEY}`)
         .expect(400);
         expect((response.error as any)?.text).toEqual("Incorrect payload, expecting from and to json body")
-        
+    });
+
+    test("returns 400 on incorrect payload", async () => {
+      const response = await request(server)
+        .post(`/resolve`)
+        .set("Authorization", `Bearer ${API_KEY}`)
+        .set("Content-Type", "application/json")
+        .send({ from: 'fileFrom.md', to: 'returnerror.md' })
+        .expect(400);
+        expect((response.error as any)?.text).toEqual("Incorrect payload, check paths of file")
     });
 
   });

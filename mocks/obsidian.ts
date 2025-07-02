@@ -117,6 +117,9 @@ export class MetadataCache {
   }
 
   getFirstLinkpathDest(linkpath: string, sourcePath: string): TFile {
+    if(linkpath.match(/returnerror.md/)) {
+      return null;
+    }
     return this._resolvedLinkPath;
   }
 }

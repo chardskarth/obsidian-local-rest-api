@@ -835,6 +835,14 @@ export default class RequestHandler {
     }
 
     const resolvedPath = this.app.metadataCache.getFirstLinkpathDest(to, from);
+
+    if(!resolvedPath) {
+      res
+        .set('text/html')
+        .status(400)
+        .send("Incorrect payload, check paths of file");
+      return;
+    }
     res.send(resolvedPath.path);
 
     return;
