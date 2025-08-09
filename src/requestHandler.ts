@@ -826,7 +826,9 @@ export default class RequestHandler {
   ) {
     const { from, to }: ResolvePayloadRequest = req.body ?? { from: "", to: "" };
 
-    if(!from || !to) {
+    console.log(`[from, to] ${from} ${to}`);
+
+    if (!from || !to) {
       res
         .set('text/html')
         .status(400)
@@ -836,7 +838,7 @@ export default class RequestHandler {
 
     const resolvedPath = this.app.metadataCache.getFirstLinkpathDest(to, from);
 
-    if(!resolvedPath) {
+    if (!resolvedPath) {
       res
         .set('text/html')
         .status(400)
